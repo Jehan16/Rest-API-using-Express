@@ -2,12 +2,23 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 productRoutes = require('./api/routes/products')
 orderRoutes = require('./api/routes/orders')
 
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://jehan:' + process.env.MONGO_ATLAS_PW + '@cluster0.yb5okjz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+    tls: true,
+    serverSelectionTimeoutMS: 5000
+}).then(() => {
+    console.log('Connected to MongoDB')
+}).catch((err) => {
+    console.error('Error connecting to MongoDB:', err)
+})
+
 app.use(morgan('dev'))
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use((req, res, next) => {
@@ -16,7 +27,7 @@ app.use((req, res, next) => {
         'Access-Control-Allow-Headers',
         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     )
-    if(req.method === 'OPTIONS') {
+    if (req.method === 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET')
         return res.status(200).json({})
     }
