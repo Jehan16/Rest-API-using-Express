@@ -93,7 +93,10 @@ router.delete('/:productID', (req, res, next) => {
         .exec()
         .then(result => {
             console.log('Product deleted ')
-            res.status(200).json(result)
+            res.status(200).json({
+                message: 'Successfully deleted',
+                product: result
+            })
         })
         .catch(err => {
             console.log(err)
